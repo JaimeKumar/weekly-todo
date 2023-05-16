@@ -1,0 +1,558 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+body {
+    overflow: hidden;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    background-color: #09090e;
+    /* background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(13, 30, 51) 100%); */
+    /* background-color: #18191e; */
+    font-family: 'Montserrat';
+}
+
+
+.mainContainer {
+    height: 99vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.bottomHalf {
+    width: 99vw;
+    height: 87vh;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.taskListContainer {
+    width: 60.3%;
+    height: 98%;
+    border-radius: 10px;
+    /* background-color: #505050; */
+    /* background-color: #3c404a; */
+    /* background: linear-gradient(90deg, rgb(42, 53, 68) 0%, rgb(72, 81, 92) 100%); */
+    background: linear-gradient(90deg, rgb(27, 37, 55) 0%, rgb(32, 42, 54) 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tasklistHover {
+    background-color: #444447;
+}
+
+.taskListInner {
+    width: 97.5%;
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+}
+
+.stepListInner {
+    width: 96.5%;
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.titleBlock {
+    /* background-color: #303030; */
+    background-color: #0e0e15;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    height: 40px;
+    width: 100px;
+    /* padding-left: 10px; */
+    /* width: fit-content; */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.stepsContainer {
+    width: 39%;
+    height: 98%;
+    border-radius: 10px;
+    /* background-color: #3c404a; */
+    /* background: linear-gradient(90deg, rgb(42, 53, 68) 0%, rgb(72, 81, 92) 70%, rgb(72, 81, 92) 100%); */
+    background: linear-gradient(90deg, rgb(28, 38, 52) 0%, rgb(57, 70, 85) 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stepsList {
+    height: 100%;
+    width: 98%;
+}
+
+.listBox {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #888;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #f1f1f1;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #d2cece;
+  }
+
+.taskBox {
+    /* background-color: #353535; */
+    background-color: #0e0e15;
+    border-radius: 10px;
+    min-height: 50px;
+    height: max-content;
+    word-wrap: break-word;
+    height: auto;
+    width: 99%;
+    margin-top: 10px;
+    color: #eeeeee;
+    overflow: hidden;
+}
+
+.taskText {
+    word-wrap: break-word;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-left: 50px;
+    padding-right: 10px;
+  }
+
+  .taskText:focus {
+    outline: none
+}
+
+.taskInner {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.6s;
+}
+
+
+.checkmark {
+    position: absolute;
+    top: 12.5px;
+    left: 12.5px;
+    height: 25px;
+    width: 25px;
+    background-color: #677282;
+    border-radius: 50%;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.checked {
+    background-color: rgb(38, 53, 79);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checked:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid rgb(157, 179, 220);
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.taskInput {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* background-color: #333333; */
+    background-color: #0e0e15;
+    border-radius: 10px;
+}
+
+.taskInput input {
+    background-color: #33333300;
+    border: none;
+    width: 97%;
+    color: #eee;
+    height: 100%;
+    font-size: 0.9em;
+}
+
+input:focus {
+    outline: none
+}
+
+.weekBarContainer {
+    width: 99vw;
+    height: 12vh;
+    top: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.weekBar {
+    height: 90%;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.weekBlock {
+    /* background-color: #3c404a; */
+    background: linear-gradient(90deg, rgb(28, 31, 35) 0%, rgb(43, 50, 58) 100%);
+    border-radius: 10px;
+    width: 14%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.weekBlockProgress {
+    background: linear-gradient(90deg, rgba(96, 104, 117, 0.114) 0%, rgba(149, 167, 192, 0.196) 100%);
+    /* background-color: #98e5fd14; */
+    height: 100%;
+    width: 0%;
+    position: absolute;
+    left: 0;
+}
+
+.weekBlockSelected {
+    height: 100%;
+    width: 100%;
+    background-color: #0125644f;
+    position: absolute;
+}
+
+.weekText {
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #c8d0d5;
+    font-weight: bold;
+    font-size: 1em;
+    text-transform: uppercase;
+    text-align: center;
+    z-index: 100;
+}
+
+.weekBlock span {
+    /* color: #888; */
+    color: #8c9095;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.weekDate {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+}
+
+.notePad {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.notePad textarea {
+    position: absolute;
+    bottom: 0;
+    width: 98%;
+    background-color: #333;
+    color: white;
+    height: 35vh;
+    border-radius: 15px;
+}
+
+.halfBlock {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.floating {
+    position: absolute;
+    width: 150px;
+    transform: scale(0.6);
+    max-height: 40px;
+}
+
+.weekHover {
+    background-color: #ffffff00;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+.hovered {
+    background-color: #223;
+}
+
+.taskBtn {
+    position: absolute;
+    top: 0;
+    height: 105%;
+    width: 80px;
+    font-weight: bolder;
+    font-size: 0.7em;
+    line-height: 50px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+}
+
+.delete {
+    background-color: #492929;
+    color: #1a0606;
+    right: -160px;
+}
+
+.edit {
+    right: -80px;
+    background-color: #1f3c23;
+    color: #030e05;
+}
+
+.removable {
+    transform: translateX(-160px);
+}
+
+.routineContainer {
+    width: 100%;
+    height: 99%;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-around; */
+    position: relative;
+    overflow-y: auto;
+    align-items: center;
+}
+
+.routineHalf {
+    width: 50%;
+    height: 100%;
+    /* border: 1px solid white; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    /* justify-content: center; */
+}
+
+.hide {
+    display: none;
+}
+
+.routineInner {
+    width: 70%;
+    height: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -15px);
+}
+
+.timeSelect {
+    display: flex;
+    flex-direction: row;
+}
+
+.newNodeBtn {
+    background-color:#0e0e15;
+    border-radius: 10px;
+    width: 180px;
+    height: 40px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.newNodeBtn:hover {
+    background-color: #555;
+}
+
+.routineHalf {
+    height: 80%;
+    overflow-y: auto;
+}
+
+.routineHalf input {
+    width: 170px;
+    background-color:#0e0e15;
+    border-radius: 10px;
+    border: none;
+    height: 40px;
+    color: white;
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.routineHalf select {
+    width: 85px;
+    background-color:#0e0e15;
+    border-radius: 10px;
+    border: none;
+    height: 40px;
+    color: white;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 10px;
+    font-size: 0.8em;
+}
+
+.nodeContainer {
+    height: 40px;
+    width: 400px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nodeHalf {
+    width: 250px;
+    height: 40px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    background-color: #0e0e15;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 40px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.nodeDelete {
+    width: 40px;
+    height: 40px;
+    color: #aa666666;
+    /* color: #ffffff33; */
+    font-weight: bold;
+    font-size: 1em;
+    text-transform: uppercase;
+    background-color: #0e0e15;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.highlighted {
+    background-color: #202020;
+}
+
+@keyframes pulse {
+    0% {color: #888}
+    10% {color: black;}
+    20% {color: #888}
+    30% {color: black;}
+    40% {color: #888}
+    50% {color: black;}
+    60% {color: #888}
+    70% {color: black;}
+    80% {color: #888}
+    90% {color: black;}
+    100% {color: #888}
+}
+
+.routineText {
+    color: #888;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.pulseText {
+    animation-duration: 5s;
+    animation-name: pulse;
+}
+

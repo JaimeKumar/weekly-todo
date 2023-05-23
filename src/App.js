@@ -14,7 +14,18 @@ function App() {
   
   const [dayProgress, setDayProgress] = useState(currentTime/1440);
 
-  const [allRoutine, setRoutine] = useState([{time: '09:00', timeVal: 900, task: 'Wake Up', id: uuidv4()}, {time: '21:00', timeVal: 2100, task: 'Clock Off', id: uuidv4()}]) 
+  const [allRoutine, setRoutine] = useState([
+    {time: '09:00', timeVal: 900, task: 'Wake Up', id: uuidv4()},
+    {time: '10:00', timeVal: 1000, task: 'Work out', id: uuidv4()},
+    {time: '10:20', timeVal: 1020, task: 'Eat', id: uuidv4()},
+    {time: '10:40', timeVal: 1040, task: 'Shower', id: uuidv4()},
+    {time: '11:00', timeVal: 1100, task: 'Coffee', id: uuidv4()},
+    {time: '13:30', timeVal: 1330, task: 'Work', id: uuidv4()},
+    {time: '14:00', timeVal: 1400, task: 'Lunch', id: uuidv4()},
+    {time: '15:00', timeVal: 1500, task: 'walk', id: uuidv4()},
+    {time: '18:30', timeVal: 1830, task: 'Dinner', id: uuidv4()},
+    {time: '19:15', timeVal: 1915, task: 'Work', id: uuidv4()},
+    {time: '21:00', timeVal: 2100, task: 'Clock Off', id: uuidv4()}]) 
 
   const [sevenDays, setDays] = useState([
     {day: dayWrap(0), today: true, selected: true, date: dateWrap(0), id: uuidv4()}, 

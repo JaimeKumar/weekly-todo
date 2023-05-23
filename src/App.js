@@ -48,8 +48,9 @@ function App() {
   const todoTxtRef = useRef();
   const dayTextRef = useRef();
   const newNodeRef = useRef();
+  const lastPos = useRef();
   
-  // load tasks and routine, init currentRoutineTask, eventlisteners and clock
+  // load tasks & routine, init currentRoutineTask, eventlisteners & clock
   useEffect(() => {
     const storedTodos = JSON.parse(localStorage.getItem('todoApp.todos'));
     if (storedTodos) setTodos(storedTodos);
@@ -186,20 +187,62 @@ function App() {
     }
   }
 
+  function checkRect() {
+    sevenDays.forEach(day => {
+      let pos = {
+        x: $('#' + day.id).position().left,
+        y: $('#' + day.id).position().top,
+        x2: $('#' + day.id).position().left + $('#' + day.id).width(),
+        y2: $('#' + day.id).position().top + $('#' + day.id).height()
+      }
+      let touch = lastPos.current;
+      if (touch.x > pos.x && touch.x < pos.x2 && touch.y > pos.y && touch.y < pos.y2) {
+        return day.id;
+      } else return null; 
+    })
+  }
+
+  function endTouch() {
+    if (taskGrabbed) {
+      dayGrabbed = checkRect();
+      taskDrop();
+    }
+  }
+
   function taskClick(e, args) {
     taskGrabbed = args;
+    let x, y = 0;
+    if(e.type == 'touchstart'){
+      var touch = e.nativeEvent.touches[0] || e.nativeEvent.changedTouches[0];
+      x = touch.pageX;
+      y = touch.pageY;
+      lastPos.current = {x: x, y: y};
+    } else {
+      x = e.clientX;
+      y = e.clientY;
+    }
     if (args.id) {
       $('#' + args.id + args.type + 'task').addClass('floating');
       $('.taskGrab').addClass('grab')
-      $('.taskGrab').css({left: e.clientX - 14 + 'px', top: e.clientY + 'px'})
+      $('.taskGrab').css({left: x - 14 + 'px', top: y + 'px'})
     }
   }
   
   function handleMouseMove(e) {
-    $('.taskGrab').css({left: e.clientX - 14 + 'px', top: e.clientY + 'px'})
+    let x, y = 0;
+    if(e.type == 'touchmove'){
+      var touch = e.nativeEvent.touches[0] || e.nativeEvent.changedTouches[0];
+      x = touch.pageX;
+      y = touch.pageY;
+      lastPos.current = {x: x, y: y};
+    } else if (e.type === 'mousemove') {
+      x = e.clientX;
+      y = e.clientY;
+    }
+    $('.taskGrab').css({left: x - 14 + 'px', top: y + 'px'})
   }
   
-  function taskDrop() {
+  function taskDrop(e) {
     if (taskGrabbed) {
       if (dayGrabbed) {
         let copyTodos = [...todos]
@@ -315,11 +358,11 @@ function App() {
   }
 
   return (
-    <div className="mainContainer" onMouseMove={handleMouseMove} onMouseUp={taskDrop} onMouseLeave={taskDrop} onContextMenu={handleRightClick}>
+    <div className="mainContainer" onMouseMove={handleMouseMove} onTouchMove={handleMouseMove} onTouchEnd={endTouch} onMouseUp={taskDrop} onMouseLeave={taskDrop} onContextMenu={handleRightClick}>
       <div className="weekBarContainer">
         <div className="weekBar">
             {sevenDays.map((day, i) => {
-                return <WeekBlock key={day.id} day={day} i={i} routineTask={currentTask.task} dayClick={dayClick} hoverTP={hoverTP} leaveTP={leaveTP} progress={dayProgress} routineClick={routineClick}/>
+                return <WeekBlock key={day.id} day={day} i={i} routineTask={currentTask.task} dayClick={dayClick} hoverTP={hoverTP} leaveTP={leaveTP} progress={dayProgress} routineClick={routineClick} />
             })}
         </div>
       </div>

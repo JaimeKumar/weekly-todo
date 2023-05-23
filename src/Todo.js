@@ -7,7 +7,7 @@ export default function Todo({todo, type, toggleTodo, taskClick, rightClickTodo,
     }
 
 		function handleTaskGrab(e) {
-      if (e.button === 0) {
+      if (e.button === 0 || e.nativeEvent.type === 'touchstart') {
         taskClick(e, {type: type, id: todo.id});
       }
 		}
@@ -37,7 +37,7 @@ export default function Todo({todo, type, toggleTodo, taskClick, rightClickTodo,
     <div id={todo.id + type + 'task'} className='taskBox' onContextMenu={handleRightClick}>
       <div id={todo.id + type + 'main'} className='taskInner'>
         <span id={todo.id + checkClass} className={checkClass} onClick={handleTodoClick}></span>
-        <div id={todo.id + type + 'text'} className='taskText' onMouseDown={handleTaskGrab} onBlur={finishEdit}>
+        <div id={todo.id + type + 'text'} className='taskText' onMouseDown={handleTaskGrab} onTouchStart={handleTaskGrab} onBlur={finishEdit}>
           {todo.txt}
         </div>
         <div className='taskBtn edit' onClick={editTask}>EDIT</div>

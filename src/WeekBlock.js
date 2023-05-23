@@ -13,7 +13,7 @@ export default function WeekBlock({day, i, routineTask, dayClick, hoverTP, leave
     function dayLeave() {
         leaveTP(day.id);
     }
-    
+
     function doubleClick() {
         if (day.today === true) {
             routineClick()

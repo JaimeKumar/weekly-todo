@@ -1,50 +1,49 @@
 import React from 'react'
 
-var selected = false;
 
-
-export default function WeekBlock({day, routineTask, dayClick, hoverTP, leaveTP, progress, routineClick}) {
+export default function WeekBlock({day, i, routineTask, dayClick, hoverTP, leaveTP, progress, routineClick}) {
     function handleClick(e) {
         dayClick(day);
     }
-
+    
     function dayHover() {
         hoverTP(day.id);
     }
-
+    
     function dayLeave() {
         leaveTP(day.id);
     }
-
+    
     function doubleClick() {
         if (day.today === true) {
             routineClick()
         }
     }
+    var weekBlockClass = 'weekBlock';
 
-    var routineText = '';
-    if (day.today===true) {
-        routineText = routineTask;
-    }
-
+    var routineText = '';    
     var progressPush = '0%';
+    var progDisplay = 'none';
     if (day.today === true) {
-        progressPush = (progress * 100) + '%';
+        routineText = routineTask;
+        console.log(routineTask);
+        progressPush = (100 -(progress * 100)) + '%';
+        progDisplay = 'flex';
     }
 
-    var selectedDisplay = 'none';
     if (day.selected) {
-        selectedDisplay = 'flex';
+        weekBlockClass += ' selected'
+    } else if (i !== 6) {
+        weekBlockClass += ' bordered'
     }
 
     return (
-    <div id={day.id} className='weekBlock' onDoubleClick={doubleClick} onClick={handleClick} onMouseOver={dayHover} onMouseLeave={dayLeave}>
-        <div className='weekBlockSelected' style={{display: selectedDisplay}}></div>
+    <div id={day.id} className={weekBlockClass} onDoubleClick={doubleClick} onClick={handleClick} onMouseOver={dayHover} onMouseLeave={dayLeave}>
         <div id={day.id + 'hover'} className='weekHover'></div>
-        <div className='weekBlockProgress' style={{width: progressPush}}></div>
+        <div className='weekBlockProgress' style={{right: progressPush, display: progDisplay}}></div>
         <div className='weekText'>
             <span className='weekDate'>{day.date}</span>
-            {day.day}
+            <div className="weekDay">{day.day}</div>
             <span className='routineText'>
                 {routineText}
             </span>

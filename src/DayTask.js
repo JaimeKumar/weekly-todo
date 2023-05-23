@@ -1,13 +1,14 @@
 import React from 'react'
+import $ from 'jquery';
 
-export default function DayTask({task, deleteDayTask, taskCheck, taskGrab, taskDrop}) {
+export default function DayTask({task, rightClickTodo, taskCheck, taskGrab, taskDrop}) {
 
     function handleRightClick() {
-        document.getElementById(task.id + 'dayDelete').classList.toggle('removable');
+        $('#' + task.id + 'dayDelete').toggleClass('removable');
     }
 
     function handleClick() {
-        deleteDayTask(task.id);
+        rightClickTodo(task.id);
     }
 
     function checkClick() {
@@ -15,7 +16,7 @@ export default function DayTask({task, deleteDayTask, taskCheck, taskGrab, taskD
     }
 
     function handleGrab(e) {
-      if (e.button == 0) {
+      if (e.button === 0) {
         taskGrab(e, task.id);
       }
     }

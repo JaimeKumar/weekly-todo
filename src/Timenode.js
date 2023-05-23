@@ -15,7 +15,7 @@ export default function Timenode({node, deleteNode, currentTask}) {
 
   return (
     <div className='nodeContainer'>
-      <div className={halfStyle} style={{width: '100px'}}>{node.time}</div>
+      <div className={halfStyle} style={{width: '110px'}}>{node.time}</div>
       <div className={halfStyle}>{node.task}</div>
       <div className={deleteStyle} onClick={removeNode}>X</div>
     </div>

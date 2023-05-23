@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import WeekBlock from './WeekBlock';
 import Todo from './Todo';
-import DayTask from './DayTask';
 import Timenode from './Timenode';
+import $ from 'jquery';
 
 function App() {
 
@@ -33,15 +33,43 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [daySelected, setDaySelected] = useState(sevenDays[0]);
   const [dayTasks, setDayTasks] = useState([...todos.filter(todo => todo.date===daySelected.date)]);
+  const [currentTask, setTask] = useState({task: ''});
   const todoTxtRef = useRef();
   const dayTextRef = useRef();
   const newNodeRef = useRef();
   
-  const [currentTask, setTask] = useState({task: ''});
-  const [triggerTodoSave, triggerSave] = useState(uuidv4());
-
-  // clock
+  // load tasks and routine, init currentRoutineTask, eventlisteners and clock
   useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem('todoApp.todos'));
+    if (storedTodos) setTodos(storedTodos);
+
+    const storedRoutine = JSON.parse(localStorage.getItem('todoApp.routine'));
+    if (storedRoutine) setRoutine(storedRoutine);
+
+    $('#hourSelect').on('wheel', function(e) {
+      if (this.hasFocus) {
+        return;
+      }
+      if (e.originalEvent.deltaY < 0) {
+        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+      }
+      if (e.originalEvent.deltaY > 0) {
+          this.selectedIndex = Math.min(this.selectedIndex + 1, this.length - 1);
+      }
+    })
+
+    $('#minSelect').on('wheel', function(e) {
+      if (this.hasFocus) {
+          return;
+      }
+      if (e.originalEvent.deltaY < 0) {
+          this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+      }
+      if (e.originalEvent.deltaY > 0) {
+          this.selectedIndex = Math.min(this.selectedIndex + 1, this.length - 1);
+      }
+    });
+
     setInterval(() => {
       d = new Date();
       setDayProgress(((d.getHours() * 60) + d.getMinutes())/1440);
@@ -50,49 +78,43 @@ function App() {
   
   // update current routine position
   useEffect(() => {
-    let minutes = d.getMinutes();
-    if (minutes < 10) {
-      minutes = '0' + minutes;
-    }
-    let realTimeVal = Number(d.getHours() + minutes);
-      let tempCurrentTask = ''
-      for (var j = allRoutine.length - 1; j >= 0; j--) {
-        if (realTimeVal >= allRoutine[j].timeVal) {
-          tempCurrentTask = allRoutine[j];
-          break;
-        }
-      }
-      if (tempCurrentTask !== currentTask) {
-        setTask(tempCurrentTask)
-        document.querySelector('.routineText').classList.add('pulseText')
-        setTimeout(() => {
-          document.querySelector('.routineText').classList.remove('pulseText')
-        }, 5005);
-      }
-  }, [dayProgress, allRoutine])
-  
-  // load All tasks
-  useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem('todoApp.todos'));
-    if (storedTodos) setTodos(storedTodos);
-  }, [])
-  
-  // load allRoutine
-  useEffect(() => {
-    const storedRoutine = JSON.parse(localStorage.getItem('todoApp.routine'));
-    if (storedRoutine) setRoutine(storedRoutine);
-  }, [])
+    updateCurrentRoutineTask();
+  }, [dayProgress])
   
   // save all tasks
   useEffect(() => {
     localStorage.setItem('todoApp.todos', JSON.stringify(todos));
     setDayTasks(todos.filter(todo => todo.date===daySelected.date));
-  }, [todos, triggerTodoSave])
+  }, [todos])
   
   // save allRoutine
   useEffect(() => {
-    localStorage.setItem('todoApp.routine', JSON.stringify(allRoutine))
+    localStorage.setItem('todoApp.routine', JSON.stringify(allRoutine));
+    updateCurrentRoutineTask();
   }, [allRoutine])
+
+  function updateCurrentRoutineTask() {
+    let minutes = d.getMinutes();
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+    let realTimeVal = Number('' + d.getHours() + minutes);
+    let tempCurrentTask = ''
+    for (var j = allRoutine.length - 1; j >= 0; j--) {
+      console.log(allRoutine[j].timeVal, realTimeVal);
+      if (realTimeVal >= allRoutine[j].timeVal) {
+        tempCurrentTask = allRoutine[j];
+        break;
+      }
+    }
+    if (tempCurrentTask !== currentTask) {
+      setTask(tempCurrentTask)
+      $('.routineText').addClass('pulseText')
+      setTimeout(() => {
+        $('.routineText').removeClass('pulseText')
+      }, 5005);
+    }
+  }
 
   function dayWrap(i) {
     let weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -116,40 +138,13 @@ function App() {
 
   function toggleTodo(id) {
     var newTodos = [...todos];
-    var newDayTasks = [...dayTasks];
-    var isAllTask = newTodos.find(todo => todo.id === id);
-    var isDayTask = dayTasks.find(task => task.id === id);
-    if (isAllTask) {
-      const todo = newTodos.find(todo => todo.id === id);
-      todo.complete = !todo.complete
-      let oldIndex = newTodos.indexOf(newTodos.find(todo => todo.id === id));
-      if (oldIndex < (newTodos.length - 1)) {
-        newTodos.splice(oldIndex, 1);
-        newTodos.push(todo);
-      }
-      setTodos(newTodos)
-    } 
-    
-    if (isDayTask) {
-      const newDayTask = newDayTasks.find(todo => todo.id === id);
-      newDayTask.complete = !newDayTask.complete;
-      let oldIndex = newDayTasks.indexOf(newDayTasks.find(todo => todo.id === id));
-      if (oldIndex < (newDayTasks.length - 1)) {
-        newDayTasks.splice(oldIndex, 1);
-        newDayTasks.push(newDayTask);
-      }
 
-      sevenDays.find(day => day.id === daySelected.id).tasks = [...newDayTasks];
-      setDayTasks(newDayTasks)
+    let clickedTodo = newTodos.indexOf(newTodos.find(todo => todo.id===id));
+    if (clickedTodo >= 0) {
+      newTodos[clickedTodo].complete = !newTodos[clickedTodo].complete;
     }
 
-    if (document.getElementById(id + 'checkmark')) {
-      document.getElementById(id + 'checkmark').classList.toggle('checked');
-    }
-
-    if (document.getElementById(id + 'dayCheck')) {
-      document.getElementById(id + 'dayCheck').classList.toggle('checked');
-    }
+    setTodos(newTodos)
   }
   
   function addTodo() {
@@ -160,18 +155,10 @@ function App() {
     todoTxtRef.current.value = null;
   }
 
-  function moveTodo(task) {
-    if (!todos.find(day => day.id === task.id)) {
-      setTodos(prevTodos => {
-        return [...prevTodos, task]
-      })
-    }
-  }
-
   function addDayTask() {
     var data = dayTextRef.current.value;
     setTodos(prevTodos => {
-      return [...prevTodos, {id: uuidv4(), txt: data, complete: false, date: daySelected.date}]
+      return [...prevTodos, {id: uuidv4(), txt: data, complete: false, date: daySelected.date, hide: true}]
     })
     dayTextRef.current.value = null;
   }
@@ -188,53 +175,34 @@ function App() {
     }
   }
 
-  function taskClick(e, id) {
-    taskGrabbed = id;
-    if (id) {
-      document.getElementById(id + 'task').classList.add('floating');
-      document.getElementById(taskGrabbed + 'task').style.left = e.clientX - 100 + 'px';
-      document.getElementById(taskGrabbed + 'task').style.top = e.clientY - 225 + 'px';
+  function taskClick(e, args) {
+    taskGrabbed = args;
+    if (args.id) {
+      $('#' + args.id + args.type + 'task').addClass('floating');
+      $('.taskGrab').addClass('grab')
+      $('.taskGrab').css({left: e.clientX - 14 + 'px', top: e.clientY + 'px'})
     }
   }
   
   function handleMouseMove(e) {
-    if (taskGrabbed) {
-      document.getElementById(taskGrabbed + 'task').style.left = e.clientX - 100 + 'px';
-      document.getElementById(taskGrabbed + 'task').style.top = e.clientY - 225 + 'px';
-    } else if (dayTaskGrabbed) {
-      document.getElementById(dayTaskGrabbed + 'dayTask').style.left = e.clientX - 1250 + 'px';
-      document.getElementById(dayTaskGrabbed + 'dayTask').style.top = e.clientY - 230 + 'px';
-    }
+    $('.taskGrab').css({left: e.clientX - 14 + 'px', top: e.clientY + 'px'})
   }
   
   function taskDrop() {
     if (taskGrabbed) {
       if (dayGrabbed) {
-        todos.find(task => task.id===taskGrabbed).date = sevenDays.find(day => day.id===dayGrabbed).date;
-        triggerSave(uuidv4());
-        if (dayGrabbed === daySelected.id) {
-          setDayTasks([...todos.filter(todo => todo.date===daySelected.date)])
-        }
-        document.getElementById(dayGrabbed + 'hover').classList.remove('hovered');
-      } 
-      document.getElementById(taskGrabbed + 'task').classList.remove('floating');
-      document.getElementById(taskGrabbed + 'task').style.left = 'auto';
-      document.getElementById(taskGrabbed + 'task').style.top = 'auto';
-    } else if (dayTaskGrabbed) {
-      if (dayGrabbed) {
-        todos.find(todo => todo.id===dayTaskGrabbed).date = sevenDays.find(day=>day.id===dayGrabbed).date;
-        triggerSave(uuidv4());
-        setDayTasks([...todos.filter(todo => todo.date===daySelected.date)])
-        document.getElementById(dayGrabbed + 'hover').classList.remove('hovered');
+        let copyTodos = [...todos]
+        copyTodos.find(task => task.id===taskGrabbed.id).date = sevenDays.find(day => day.id===dayGrabbed).date;
+        setTodos(copyTodos)
       }
-      document.getElementById(dayTaskGrabbed + 'dayTask').classList.remove('floating');
-      dayTaskGrabbed = null;
+      $('#' + taskGrabbed.id + taskGrabbed.type + 'task').removeClass('floating');
     }
-
+    
+    $('.taskGrab').removeClass('grab')
     dayGrabbed = null;
     taskGrabbed = null;
   }
-
+      
   function dayClick(day) {
     if (day !== daySelected) {
       sevenDays.forEach((thisDay) => {
@@ -242,7 +210,7 @@ function App() {
           thisDay.selected = false;
         }
       })
-
+      
       day.selected = true;
 
       setDaySelected(day);
@@ -254,14 +222,14 @@ function App() {
   function hoverTP(id) {
     dayGrabbed = id;
     if (taskGrabbed || dayTaskGrabbed) {
-      document.getElementById(id + 'hover').classList.add('hovered');
+      $('#' + id + 'hover').addClass('hovered');
     }
   }
   
   function leaveTP(id) {
     dayGrabbed = null;
     if (taskGrabbed || dayTaskGrabbed) {
-      document.getElementById(id + 'hover').classList.remove('hovered');
+      $('#' + id + 'hover').removeClass('hovered');
     }
   }
 
@@ -269,51 +237,48 @@ function App() {
     e.preventDefault();
   }
 
-  function taskDelete(id) {
-    document.getElementById(id + 'main').classList.toggle('removable');
+  function todoRightClick(args) {
+    $('#' + args.id + args.type + 'main').toggleClass('removable');
   }
 
   function removeTask(id) {
-    todos.splice(todos.indexOf(todos.find(todo => todo.id === id)), 1);
-    setTodos([...todos])
+    let copyTasks = [...todos];
+    let thisTask = copyTasks.find(todo => todo.id === id);
+    if (thisTask.hasOwnProperty('date')) {
+      thisTask.hide = true;
+    } else {
+      copyTasks.splice(copyTasks.indexOf(thisTask), 1);
+    }
+    setTodos([...copyTasks])
   }
 
   function removeTaskFromDay(id) {
-    if (todos.find(todo => todo.id===id)) {
-      todos.find(todo => todo.id===id).date = null;
+    let copyTasks = [...todos];
+    let thisTask = copyTasks.find(todo => todo.id === id);
+    if (thisTask.hide) {
+      copyTasks.splice(copyTasks.indexOf(thisTask), 1);
+    } else {
+      thisTask.date = null;
     }
-    setDayTasks([...todos.filter(task => task.date===daySelected.date)])
+    setTodos(copyTasks)
   }
 
-  function taskCheck(id) {
-    toggleTodo(id)
+  function editTask(args) {
+    $('#' + args.id + args.type + 'main').toggleClass('removable');
+    $('#' + args.id + args.type + 'text').attr('contentEditable', 'true');
+    $('#' + args.id + args.type + 'text').trigger('focus');
   }
 
-  function editTask(id) {
-    document.getElementById(id + 'main').classList.toggle('removable');
-    document.getElementById(id + 'text').contentEditable = true;
-    document.getElementById(id + 'text').focus();
-  }
-
-  function finishEdit(id) {
-    document.getElementById(id + 'text').contentEditable = false;
+  function finishEdit(args) {
+    $('#' + args.id + args.type + 'text').attr('contentEditable', 'false');
     let prevTodos = [...todos];
-    prevTodos.find(todo => todo.id===id).txt = document.getElementById(id + 'text').innerHTML;
+    prevTodos.find(todo => todo.id===args.id).txt = $('#' + args.id + args.type + 'text').html();
     setTodos(prevTodos);
   }
 
   function routineClick() {
-    document.getElementById('tasks').classList.toggle('hide');
-    document.getElementById('routine').classList.toggle('hide');
-  }
-
-  function dayTaskGrab(e, id) {
-    dayTaskGrabbed = id;
-    if (id) {
-      document.getElementById(id + 'dayTask').classList.add('floating');
-      document.getElementById(id + 'dayTask').style.left = e.clientX - 1250 + 'px';
-      document.getElementById(id + 'dayTask').style.top = e.clientY - 230 + 'px';
-    }
+    $('#' + 'tasks').toggleClass('hide');
+    $('#' + 'routine').toggleClass('hide');
   }
 
   function deleteNode(id) {
@@ -325,8 +290,8 @@ function App() {
 
   function newNode() {
     let nodeText = newNodeRef.current.value;
-    let nodeHour = document.getElementById('hourSelect').value;
-    let nodeMin = document.getElementById('minSelect').value;
+    let nodeHour = $('#hourSelect').val();
+    let nodeMin = $('#minSelect').val();
     let nodeTime = Number(nodeHour + nodeMin);
 
 
@@ -338,42 +303,14 @@ function App() {
     newNodeRef.current.value = null;
   }
 
-  useEffect(() => {
-    document.getElementById('hourSelect').addEventListener('wheel', function(e) {
-      if (this.hasFocus) {
-          return;
-      }
-      if (e.deltaY < 0) {
-          this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
-      }
-      if (e.deltaY > 0) {
-          this.selectedIndex = Math.min(this.selectedIndex + 1, this.length - 1);
-      }
-    })
-
-    document.getElementById('minSelect').addEventListener('wheel', function(e) {
-      if (this.hasFocus) {
-          return;
-      }
-      if (e.deltaY < 0) {
-          this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
-      }
-      if (e.deltaY > 0) {
-          this.selectedIndex = Math.min(this.selectedIndex + 1, this.length - 1);
-      }
-    });
-  }, [])
-
   return (
     <div className="mainContainer" onMouseMove={handleMouseMove} onMouseUp={taskDrop} onMouseLeave={taskDrop} onContextMenu={handleRightClick}>
       <div className="weekBarContainer">
-        {/* <ScrollButton direction='«'/> */}
         <div className="weekBar">
-            {sevenDays.map(day => {
-                return <WeekBlock key={day.id} day={day} routineTask={currentTask.task} dayClick={dayClick} hoverTP={hoverTP} leaveTP={leaveTP} progress={dayProgress} routineClick={routineClick}/>
+            {sevenDays.map((day, i) => {
+                return <WeekBlock key={day.id} day={day} i={i} routineTask={currentTask.task} dayClick={dayClick} hoverTP={hoverTP} leaveTP={leaveTP} progress={dayProgress} routineClick={routineClick}/>
             })}
         </div>
-        {/* <ScrollButton direction='»'/> */}
       </div>
       <div className="bottomHalf">
         <div id='tasksMain' className="taskListContainer">
@@ -383,15 +320,15 @@ function App() {
             </div>
             <div className='listBox'>
               {todos.map(todo => {
-                if (todo) {
-                  return <Todo key={todo.id} toggleTodo={toggleTodo} todo={todo} taskClick={taskClick} taskDelete={taskDelete} removeTask={removeTask} editTodo={editTask} editFinished={finishEdit}/>
+                if (!todo.hide) {
+                  return <Todo key={todo.id} type='todo' toggleTodo={toggleTodo} todo={todo} taskClick={taskClick} rightClickTodo={todoRightClick} removeTask={removeTask} editTodo={editTask} editFinished={finishEdit}/>
                 } else {
                   return null;
                 }
               })}
             </div>
             <div className="taskInput">
-              <input ref={todoTxtRef} onKeyDown={handleKey} type="text"/>
+              <input ref={todoTxtRef} onKeyDown={handleKey} type="text" placeholder="Enter a task..." />
             </div>
           </div>
 
@@ -448,7 +385,7 @@ function App() {
                     </select>
                   </div>
                 </div>
-                <input ref={newNodeRef} type="text"/>
+                <input ref={newNodeRef} type="text" placeholder="Enter an activity..." />
                 <div className='newNodeBtn' onClick={newNode}>Add Node</div>
               </div>
               <div className="routineHalf">
@@ -469,15 +406,17 @@ function App() {
             </div>
             <div className="listBox">
               {dayTasks.map(task => {
-                return <DayTask key={task.id} task={task} deleteDayTask={removeTaskFromDay} taskCheck={taskCheck} taskGrab={dayTaskGrab}/>
+                return <Todo key={task.id} type='dayTask' toggleTodo={toggleTodo} todo={task} taskClick={taskClick} rightClickTodo={todoRightClick} removeTask={removeTaskFromDay} editTodo={editTask} editFinished={finishEdit}/>
               })}
             </div>
             <div className="taskInput">
-              <input ref={dayTextRef} onKeyDown={handleDayKey} type="text"/>
+              <input ref={dayTextRef} onKeyDown={handleDayKey} type="text" placeholder="Enter a task..." />
             </div>
           </div>
         </div>
       </div>
+
+      <div className="taskGrab"></div>
     </div>
   )
 }

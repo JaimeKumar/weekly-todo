@@ -82,11 +82,19 @@ function App() {
       }
     });
 
+    $(window).on('resize', resize);
+
     setInterval(() => {
       d = new Date();
       setDayProgress(((d.getHours() * 60) + d.getMinutes())/1440);
     }, 1000);
+
+    resize();
   }, [])
+
+  function resize() {
+    $('#root').css({height: window.screen.availHeight})
+  }
   
   // update current routine position
   useEffect(() => {

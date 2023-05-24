@@ -88,7 +88,6 @@ function App() {
     setInterval(() => {
       d = new Date();
       setDayProgress(((d.getHours() * 60) + d.getMinutes())/1440);
-      console.log(((d.getHours() * 60) + d.getMinutes())/1440);
     }, 1000);
 
     resize();

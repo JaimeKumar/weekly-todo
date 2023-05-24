@@ -223,6 +223,20 @@ html, body {
     transform: rotate(45deg);
 }
 
+.rightClickTodo {
+    position: absolute;
+    right: 10px;
+    color: #ccc;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    height: 10px;
+    line-height: 2px;
+    letter-spacing: 0.15rem;
+    font-weight: bold;
+    display: none;
+}
+
 .taskInput {
     height: 50px;
     width: 100%;
@@ -401,7 +415,8 @@ input:focus {
     position: relative;
     overflow-y: auto;
     align-items: center;
-    padding: 0 30px 0 00px;
+    justify-content: space-between;
+    /* padding: 0 30px 0 00px; */
 }
 
 .routineHalf {
@@ -609,6 +624,43 @@ input:focus {
 
     .titleBlock {
         font-size: 1rem;
+    }
+
+    .rightClickTodo {
+        display: flex;
+    }
+
+    .taskBtn {
+        width: 60px;
+    }
+
+    .delete {
+        right: -120px;
+    }
+
+    .edit {
+        right: -60px;
+    }
+
+    .removable {
+        transform: translateX(-120px);
+    }
+
+    .nodeContainer {
+        width: 160px;
+        height: 25px;
+    }
+
+    .nodeHalf {
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.6rem;
+    }
+    
+    .nodeDelete {
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.6rem;
     }
 }
 

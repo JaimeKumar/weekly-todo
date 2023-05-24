@@ -40,6 +40,7 @@ export default function Todo({todo, type, toggleTodo, taskClick, rightClickTodo,
         <div id={todo.id + type + 'text'} className='taskText' onMouseDown={handleTaskGrab} onTouchStart={handleTaskGrab} onBlur={finishEdit}>
           {todo.txt}
         </div>
+        <div className="rightClickTodo" onClick={handleRightClick}>...</div>
         <div className='taskBtn edit' onClick={editTask}>EDIT</div>
         <div className='taskBtn delete' onClick={removeTaskCTP}>DELETE</div>
       </div>

@@ -57,7 +57,7 @@ function App() {
     if (storedTodos) setTodos(storedTodos);
 
     const storedRoutine = JSON.parse(localStorage.getItem('todoApp.routine'));
-    // if (storedRoutine) setRoutine(storedRoutine);
+    if (storedRoutine) setRoutine(storedRoutine);
 
     $('#hourSelect').on('wheel', function(e) {
       if (this.hasFocus) {
@@ -88,6 +88,7 @@ function App() {
     setInterval(() => {
       d = new Date();
       setDayProgress(((d.getHours() * 60) + d.getMinutes())/1440);
+      console.log(((d.getHours() * 60) + d.getMinutes())/1440);
     }, 1000);
 
     resize();
@@ -226,7 +227,7 @@ function App() {
   function taskClick(e, args) {
     taskGrabbed = args;
     let x, y = 0;
-    if(e.type == 'touchstart'){
+    if(e.type === 'touchstart'){
       let evt = e;
       if (typeof e.touches === 'undefined') evt = e.originalEvent;
       var touch = evt.touches[0] || evt.changedTouches[0];
@@ -389,7 +390,7 @@ function App() {
       <div className="bottomHalf">
         <div id='tasksMain' className="taskListContainer">
           <div id='tasks' className="taskListInner">
-            <div className="titleBlock">
+            <div className="titleBlock" onClick={routineClick}>
               Tasks
             </div>
             <div className='listBox'>
@@ -407,11 +408,11 @@ function App() {
           </div>
 
           <div id='routine' className="taskListInner hide">
-              <div className="titleBlock">
+              <div className="titleBlock" onClick={routineClick}>
                 Routine
               </div>
             <div className="routineContainer">
-              <div className="routineHalf" style={{height: '25%'}}>
+              <div className="routineHalf">
                 <div className="timeSelect">
                   <div className="custom-select">
                     <select id='hourSelect' defaultValue={'09'}>

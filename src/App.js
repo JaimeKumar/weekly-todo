@@ -93,7 +93,7 @@ function App() {
   }, [])
 
   function resize() {
-    doc.style.setProperty('--doc-height', `${window.innerHeight}px`)
+    document.documentElement.style.setProperty('--doc-height', `${window.innerHeight}px`)
     // $('#root').css({height: window.screen.availHeight + 'px'});
     // $('.mainContainer').css({height: window.screen.availHeight + 'px'});
   }

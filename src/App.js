@@ -94,7 +94,7 @@ function App() {
 
   function resize() {
     $('#root').css({height: window.screen.availHeight + 'px'});
-    // $('.mainContainer').css({height: window.screen.availHeight + 'px'});
+    $('.mainContainer').css({height: window.screen.availHeight + 'px'});
   }
   
   // update current routine position

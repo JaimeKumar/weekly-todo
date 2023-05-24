@@ -21,7 +21,6 @@ html, body {
 
 .mainContainer {
     height: 100%;
-    /* height: -webkit-fill-available; */
     width: 100%;
     display: flex;
     flex-direction: column;

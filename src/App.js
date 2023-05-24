@@ -57,7 +57,7 @@ function App() {
     if (storedTodos) setTodos(storedTodos);
 
     const storedRoutine = JSON.parse(localStorage.getItem('todoApp.routine'));
-    if (storedRoutine) setRoutine(storedRoutine);
+    // if (storedRoutine) setRoutine(storedRoutine);
 
     $('#hourSelect').on('wheel', function(e) {
       if (this.hasFocus) {

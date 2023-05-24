@@ -16,13 +16,14 @@ function App() {
 
   const [allRoutine, setRoutine] = useState([
     {time: '09:00', timeVal: 900, task: 'Wake Up', id: uuidv4()},
-    {time: '10:00', timeVal: 1000, task: 'Work out', id: uuidv4()},
-    {time: '10:20', timeVal: 1020, task: 'Eat', id: uuidv4()},
-    {time: '10:40', timeVal: 1040, task: 'Shower', id: uuidv4()},
-    {time: '11:00', timeVal: 1100, task: 'Coffee', id: uuidv4()},
-    {time: '13:30', timeVal: 1330, task: 'Work', id: uuidv4()},
-    {time: '14:00', timeVal: 1400, task: 'Lunch', id: uuidv4()},
-    {time: '15:00', timeVal: 1500, task: 'walk', id: uuidv4()},
+    {time: '09:30', timeVal: 900, task: 'Work out', id: uuidv4()},
+    {time: '10:00', timeVal: 1000, task: 'Eat', id: uuidv4()},
+    {time: '10:20', timeVal: 1020, task: 'Shower', id: uuidv4()},
+    {time: '10:40', timeVal: 1020, task: 'Coffee', id: uuidv4()},
+    {time: '11:00', timeVal: 1100, task: 'Work', id: uuidv4()},
+    {time: '13:30', timeVal: 1330, task: 'Lunch', id: uuidv4()},
+    {time: '14:00', timeVal: 1400, task: 'walk', id: uuidv4()},
+    {time: '15:00', timeVal: 1500, task: 'work', id: uuidv4()},
     {time: '18:30', timeVal: 1830, task: 'Dinner', id: uuidv4()},
     {time: '19:15', timeVal: 1915, task: 'Work', id: uuidv4()},
     {time: '21:00', timeVal: 2100, task: 'Clock Off', id: uuidv4()}]) 
@@ -93,10 +94,7 @@ function App() {
   }, [])
 
   function resize() {
-    // console.log(window.innerHeight, window.screen.availHeight, document.documentElement.clientHeight)
-    // document.documentElement.style.setProperty('--doc-height', `${window.screen.availHeight}px`)
     $('#root').css({height: window.innerHeight + 'px'});
-    // $('.mainContainer').css({height: window.screen.availHeight + 'px'});
   }
   
   // update current routine position
@@ -124,7 +122,6 @@ function App() {
     let realTimeVal = Number('' + d.getHours() + minutes);
     let tempCurrentTask = ''
     for (var j = allRoutine.length - 1; j >= 0; j--) {
-      console.log(allRoutine[j].timeVal, realTimeVal);
       if (realTimeVal >= allRoutine[j].timeVal) {
         tempCurrentTask = allRoutine[j];
         break;
@@ -199,6 +196,7 @@ function App() {
   }
 
   function checkRect() {
+    let returnID = null;
     sevenDays.forEach(day => {
       let pos = {
         x: $('#' + day.id).position().left,
@@ -208,14 +206,16 @@ function App() {
       }
       let touch = lastPos.current;
       if (touch.x > pos.x && touch.x < pos.x2 && touch.y > pos.y && touch.y < pos.y2) {
-        return day.id;
-      } else return null; 
+        returnID = day.id;
+      } 
     })
+    return returnID;
   }
 
   function endTouch() {
     if (taskGrabbed) {
       dayGrabbed = checkRect();
+      console.log(dayGrabbed);
       taskDrop();
     }
   }
@@ -223,8 +223,9 @@ function App() {
   function taskClick(e, args) {
     taskGrabbed = args;
     let x, y = 0;
+    console.log(e);
     if(e.type == 'touchstart'){
-      var touch = e.nativeEvent.touches[0] || e.nativeEvent.changedTouches[0];
+      var touch = e.touches[0] || e.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
       lastPos.current = {x: x, y: y};
@@ -240,9 +241,11 @@ function App() {
   }
   
   function handleMouseMove(e) {
+    if (!taskGrabbed) return;
     let x, y = 0;
-    if(e.type == 'touchmove'){
-      var touch = e.nativeEvent.touches[0] || e.nativeEvent.changedTouches[0];
+    if(e.type === 'touchmove'){
+      // console.log(e);
+      var touch = e.touches[0] || e.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
       lastPos.current = {x: x, y: y};
@@ -398,10 +401,10 @@ function App() {
           </div>
 
           <div id='routine' className="taskListInner hide">
-            <div className="routineContainer">
-              <div className="titleBlock" style={{top: '0px', position: 'absolute'}}>
+              <div className="titleBlock">
                 Routine
               </div>
+            <div className="routineContainer">
               <div className="routineHalf" style={{height: '25%'}}>
                 <div className="timeSelect">
                   <div className="custom-select">

@@ -26,7 +26,6 @@ export default function WeekBlock({day, i, routineTask, dayClick, hoverTP, leave
     var progDisplay = 'none';
     if (day.today === true) {
         routineText = routineTask;
-        console.log(routineTask);
         progressPush = (100 -(progress * 100)) + '%';
         progDisplay = 'flex';
     }

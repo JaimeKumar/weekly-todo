@@ -195,7 +195,7 @@ function App() {
     }
   }
 
-  function checkRect() {
+  function checkRect(type) {
     let returnID = null;
     sevenDays.forEach(day => {
       let pos = {
@@ -207,15 +207,18 @@ function App() {
       let touch = lastPos.current;
       if (touch.x > pos.x && touch.x < pos.x2 && touch.y > pos.y && touch.y < pos.y2) {
         returnID = day.id;
-      } 
+        if (type==='hover') $('#' + day.id).addClass('hovered')
+      } else {
+        if (type==='hover') $('#' + day.id).removeClass('hovered')
+      }
+      if (type==='drop') $('#' + day.id).removeClass('hovered')
     })
     return returnID;
   }
 
   function endTouch() {
     if (taskGrabbed) {
-      dayGrabbed = checkRect();
-      console.log(dayGrabbed);
+      dayGrabbed = checkRect('drop');
       taskDrop();
     }
   }
@@ -223,9 +226,10 @@ function App() {
   function taskClick(e, args) {
     taskGrabbed = args;
     let x, y = 0;
-    console.log(e);
     if(e.type == 'touchstart'){
-      var touch = e.touches[0] || e.changedTouches[0];
+      let evt = e;
+      if (typeof e.touches === 'undefined') evt = e.originalEvent;
+      var touch = evt.touches[0] || evt.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
       lastPos.current = {x: x, y: y};
@@ -244,11 +248,13 @@ function App() {
     if (!taskGrabbed) return;
     let x, y = 0;
     if(e.type === 'touchmove'){
-      // console.log(e);
-      var touch = e.touches[0] || e.changedTouches[0];
+      let evt = e;
+      if (typeof e.touches === 'undefined') evt = e.originalEvent;
+      var touch = evt.touches[0] || evt.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
       lastPos.current = {x: x, y: y};
+      checkRect('hover');
     } else if (e.type === 'mousemove') {
       x = e.clientX;
       y = e.clientY;
